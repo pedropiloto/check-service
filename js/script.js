@@ -23,7 +23,7 @@ var keepGoing;
 var keepGoingTimeOut;
 var checkConnectionTimeOut;
 var data;
-
+var chart;
 function checkConnection(host, port, timeout) {
     /*make sure you host a helloWorld HTML page in the following URL, so that requests are succeeded with 200 status code*/
     $.ajax({
@@ -46,6 +46,9 @@ function checkConnection(host, port, timeout) {
 }
 
 $(document).ready(function () {
+
+    startChart();
+
     $('#beginTest').click(function () {
 
         cleanResults();
@@ -109,23 +112,20 @@ $(document).ready(function () {
 
 
 function cleanResults() {
-    var results = document.getElementById("results");
     var startDate = document.getElementById("startDate");
     var requests_number = document.getElementById("requests_number");
     var success_rate = document.getElementById("success_rate");
     var mtbf_element = document.getElementById("mtbf");
     var errors_element = document.getElementById("errors");
-    var results_file_1 = document.getElementById("results_file1");
-    var results_file_2 = document.getElementById("results_file2");
+    var files_badge_element = document.getElementById("files_badge");
 
-    cleanElement(results);
     cleanElement(startDate);
     cleanElement(requests_number);
     cleanElement(success_rate);
     cleanElement(mtbf_element);
     cleanElement(errors_element);
-    cleanElement(results_file_1);
-    cleanElement(results_file_2);
+    cleanElement(files_badge_element);
+    $('#files_tab').addClass('disabled');
     requests = 0;
     successRequests = 0;
     errorRequests = 0;
@@ -139,20 +139,16 @@ function cleanResults() {
     lastTimeUP = 0;
     timeDown = 0;
     beginData();
+    clearChart();
 }
 
 function updateVars() {
-    var results = document.getElementById("results");
     var requests_number = document.getElementById("requests_number");
     var success_rate = document.getElementById("success_rate");
     var mtbf_element = document.getElementById("mtbf");
     var errors_element = document.getElementById("errors");
 
-    var disponibility_temp = Number(successRequests) / Number(totalRequests);
-    disponibility = Math.ceil(disponibility_temp * 100) / 100;
-
-    var requestsNumber = Number(successRequests) + Number(errorRequests);
-    updateElement(requests_number, requestsNumber);
+    updateElement(requests_number, totalRequests);
 
     timeUP = time - timeDown;
 
@@ -189,8 +185,8 @@ function addSuccess() {
     }
     updateVars();
     var results = $('#results');
-    results.append("<tr><td>" + date.toLocaleString() + "</td><td>UP</td></tr>");
     data = data + Math.floor(date.getTime()/1000) + ";UP \n";
+    addPointToChart(date,1,null);
 }
 function addError() {
     totalRequests++;
@@ -207,22 +203,20 @@ function addError() {
     errorRequests++;
     updateVars();
     var results = $('#results');
-    results.append("<tr><td>" + date.toLocaleString() + "</td><td>DOWN</td></tr>");
     data = data + Math.floor(date.getTime()/1000) + ";DOWN \n";
+    addPointToChart(date,0,"red");
 }
 
 function createResultsFile() {
-    $('#results_file1').append("<a id='export1' class='myButton' download='' href='#'>File 1</a>");
 
     var str = "StartDate;EndDate;Params;TotalRequests;Disponibility; MTBF \n";
     str = str + Math.round(startDate.getTime()/1000) + ";" + Math.round(endDate.getTime()/1000) + ";" + interval + "/" + port + "/" + host + "/" + timeout + "/" + duration + ";" + totalRequests + ";";
     str= str + (Math.ceil(disponibility*100)/100) + ";" + (Math.ceil(mtbf*1000)/1000);
 
-    createDownloadLink("#export1", str, "results1.csv");
-    $('#results_file2').append("<a id='export2' class='myButton' download='' href='#'>File 2</a>");
-    console.log(data);
-    createDownloadLink("#export2", data, "results2.csv");
-
+    createDownloadLink("#results_file1", str, "results1.csv");
+    createDownloadLink("#results_file2", data, "results2.csv");
+    $('#files_badge').append('2');
+    $('#files_tab').removeClass('disabled');
 }
 
 function createDownloadLink(anchorSelector, str, fileName) {
@@ -259,5 +253,39 @@ function convertMilisecondsToHours(date){
 
 function beginData() {
     data = "date;status \n";
+}
+
+function startChart(){
+    chart = new CanvasJS.Chart("chartContainer", {
+        title: {
+            text: "Requests"
+        },
+        axisY: {
+            includeZero: false,
+        },
+        data: [
+            {
+                type: "stepLine",
+                dataPoints: [
+
+                ]
+            }
+
+        ]
+    });
+    chart.render();
+}
+function clearChart(){
+    chart.data[0].dataPoints.length=0;
+    chart.render();
+}
+function addPointToChart(x_value,y_value,color){
+    if(color===null) {
+        chart.data[0].dataPoints.push({x: x_value, y: y_value});
+    }else{
+        chart.data[0].dataPoints.push({x: x_value, y: y_value, lineColor:"red"});
+    }
+    chart.render();
+
 }
 
