@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Connection Check</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+
+</head>
+<body>
+
+<div class="container">
+    <h2></h2>
+    <div class="panel panel-default" id="panel">
+        <div class="panel-body">
+            <div id ="alerts"></div>
+            </br>
+            </br>
+
+            <div style="width: 50%; margin-left:25%;margin-right: 25%;">
+
+                <form action="javscript:void(0);">
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label>Host</label></labek>
+                        <input id="hostname" name="hostname" type="url" placeholder="HostName"
+                               class="form-control input-md" required>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label>Port</label>
+                        <input id="port" name="port" type="number" placeholder="Port" class="form-control input-md"
+                               required>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label>Interval (secs)</label>
+                        <input id="interval" name="interval" type="number" placeholder="Interval (secs)"
+                               class="form-control input-md" required>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label>Timeout (secs)</label>
+                        <input id="timeout" name="timeout" type="number" placeholder="Timeout (secs)"
+                               class="form-control input-md" required>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label>Duration (mins)</label>
+                        <input id="duration" name="duration" type="number" placeholder="Duration (mins)"
+                               class="form-control input-md" required>
+                    </div>
+
+                    <!-- Button (Double) -->
+                    <div class="form-group" style="text-align: center">
+                        <div class="row">
+                            <div class="col-md-6">
+                            <button id="beginTest" name="beginTest" type=button" class="btn btn-success"
+                                    data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Results">
+                                Begin Test
+                            </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button id="resetTest" name="beginTest" type=button" class="btn btn-danger">
+                                    Reset Test
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <hr>
+
+            <h2>Results <span id="results_file1"></span><span id="results_file2" style="margin-left:5%;"></span></h2>
+
+            <p><strong>Start: </strong> <span id="startDate"
+                                              style="margin-right:20px;"></span><strong>Requests: </strong> <span
+                    id="requests_number" style="margin-right:20px;">0</span> <strong>Disponibility (%): </strong><span
+                    id="success_rate" style="margin-right:20px;">0</span> <strong>MTBF (hours): </strong> <span id="mtbf" style="margin-right:20px;"></span><strong>Errors: </strong><span id="errors" style="margin-right:20px;"></span></p>
+
+            <table class="table">
+                <thead>
+                <th>Date</th>
+                <th>Status</th>
+                </thead>
+                <tbody id="results">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
